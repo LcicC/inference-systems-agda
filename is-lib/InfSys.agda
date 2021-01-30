@@ -1,3 +1,6 @@
+--------------------------------------------------------------------------------
+-- This is part of Agda Inference Systems 
+
 module is-lib.InfSys {l} where
   open import is-lib.InfSys.Base {l} public 
   open import is-lib.InfSys.Induction {l} public

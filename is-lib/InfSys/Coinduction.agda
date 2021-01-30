@@ -1,3 +1,6 @@
+--------------------------------------------------------------------------------
+-- This is part of Agda Inference Systems 
+
 open import Agda.Builtin.Equality
 open import Data.Product
 

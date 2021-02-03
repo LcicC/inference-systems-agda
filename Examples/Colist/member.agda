@@ -12,12 +12,12 @@ open import Examples.Colist.Auxiliary.Colist_memberOf
 
 open import is-lib.InfSys
 
-module Examples.Colist.memberOf {A : Set} where
+module Examples.Colist.member {A : Set} where
 
   U = A × Colist A ∞
 
-  data memberOfRN : Set where
-    mem-h mem-t : memberOfRN
+  data memberRN : Set where
+    mem-h mem-t : memberRN
 
   mem-h-r : MetaRule U
   mem-h-r .C = A × Thunk (Colist A) ∞
@@ -33,44 +33,44 @@ module Examples.Colist.memberOf {A : Set} where
     ----------------
     (x , y ∷ xs) , ⊤
 
-  mem-is : IS U
-  mem-is .Names = memberOfRN
-  mem-is .rules mem-h = mem-h-r
-  mem-is .rules mem-t = mem-t-r
+  memberIS : IS U
+  memberIS .Names = memberRN
+  memberIS .rules mem-h = mem-h-r
+  memberIS .rules mem-t = mem-t-r
 
-  _memberOf_ : A → Colist A ∞ → Set
-  x memberOf xs = Ind⟦ mem-is ⟧ (x , xs)
+  _member_ : A → Colist A ∞ → Set
+  x member xs = Ind⟦ memberIS ⟧ (x , xs)
   
-  mem-S : U → Set
-  mem-S (x , xs) = Σ[ i ∈ ℕ ] (Colist.lookup i xs ≡ just x)
+  memSpec : U → Set
+  memSpec (x , xs) = Σ[ i ∈ ℕ ] (Colist.lookup i xs ≡ just x)
 
-  mem-Closed : ISClosed mem-is mem-S
-  mem-Closed mem-h tt _ = zero , refl
-  mem-Closed mem-t tt pr =
+  memSpecClosed : ISClosed memberIS memSpec
+  memSpecClosed mem-h tt _ = zero , refl
+  memSpecClosed mem-t tt pr =
     let (i , proof) = pr Fin.zero in
     (suc i) , proof
 
-  mem-sound : ∀ {x xs} → x memberOf xs → mem-S (x , xs)
-  mem-sound = ind[ mem-is ] mem-S mem-Closed
+  memberSound : ∀ {x xs} → x member xs → memSpec (x , xs)
+  memberSound = ind[ memberIS ] memSpec memSpecClosed
 
-  -- Completeness using mem-S does not terminate
+  -- Completeness using memSpec does not terminate
   -- Product implemented as record. Record projections do not decrease
-  mem-S' : U → ℕ → Set
-  mem-S' (x , xs) i = Colist.lookup i xs ≡ just x
+  memSpec' : U → ℕ → Set
+  memSpec' (x , xs) i = Colist.lookup i xs ≡ just x
 
-  mem-compl : ∀{x xs i} → mem-S' (x , xs) i → x memberOf xs
+  mem-compl : ∀{x xs i} → memSpec' (x , xs) i → x member xs
   mem-compl {.x} {x ∷ _} {zero} refl = apply-ind mem-h tt λ ()
   mem-compl {x} {y ∷ xs} {suc i} eq = apply-ind mem-t tt λ{zero → mem-compl eq}
 
-  mem-complete : ∀{x xs} → mem-S (x , xs) → x memberOf xs
-  mem-complete (i , eq) = mem-compl eq
+  memberComplete : ∀{x xs} → memSpec (x , xs) → x member xs
+  memberComplete (i , eq) = mem-compl eq
 
   {- Correctness wrt to Agda DataType -}
 
-  ∈-sound : ∀{x xs} → x ∈ xs → x memberOf xs
+  ∈-sound : ∀{x xs} → x ∈ xs → x member xs
   ∈-sound here = apply-ind mem-h tt λ ()
   ∈-sound (there mem) = apply-ind mem-t tt λ{zero → ∈-sound mem}
 
-  ∈-complete : ∀{x xs} → x memberOf xs → x ∈ xs
+  ∈-complete : ∀{x xs} → x member xs → x ∈ xs
   ∈-complete (fold (mem-h , _ , refl , _)) = here
   ∈-complete (fold (mem-t , _ , refl , _ , prem)) = there (∈-complete (prem zero))

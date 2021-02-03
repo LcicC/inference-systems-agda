@@ -33,25 +33,25 @@ module Examples.Colist.allPos where
     -----------------
     (x ∷ xs) , (x > 0)
 
-  allP-IS : IS U
-  allP-IS .Names = allPosRN
-  allP-IS .rules allp-Λ = allP-Λ
-  allP-IS .rules allp-t = allP-t
+  allPosIS : IS U
+  allPosIS .Names = allPosRN
+  allPosIS .rules allp-Λ = allP-Λ
+  allPosIS .rules allp-t = allP-t
 
   allPos : U → Set
-  allPos = CoInd⟦ allP-IS ⟧
+  allPos = CoInd⟦ allPosIS ⟧
 
-  allP-S : U → Set
-  allP-S xs = ∀{x} → x ∈ xs → x > 0
+  allPosSpec : U → Set
+  allPosSpec xs = ∀{x} → x ∈ xs → x > 0
 
-  allP-sound : ∀{xs} → allPos xs → allP-S xs
-  allP-sound {x ∷ xs} ap mem with ap .CoInd⟦_⟧.unfold
-  allP-sound {x ∷ xs} ap here | allp-t , (.x , .xs) , refl , x>0 , prem = x>0
-  allP-sound {x ∷ xs} ap (there mem) | allp-t , (.x , .xs) , refl , x>0 , prem = allP-sound (prem zero) mem
+  allPosSound : ∀{xs} → allPos xs → allPosSpec xs
+  allPosSound {x ∷ xs} ap mem with ap .CoInd⟦_⟧.unfold
+  allPosSound {x ∷ xs} ap here | allp-t , (.x , .xs) , refl , x>0 , prem = x>0
+  allPosSound {x ∷ xs} ap (there mem) | allp-t , (.x , .xs) , refl , x>0 , prem = allPosSound (prem zero) mem
 
-  allP-cons : ∀{xs} → allP-S xs → ISF[ allP-IS ] allP-S xs
-  allP-cons {[]} _ = allp-Λ , (tt , (refl , tt , λ ()))
-  allP-cons {(x ∷ xs)} Sxs = allp-t , ((x , xs) , (refl , (Sxs here , λ {Fin.zero → λ mem → Sxs (there mem)})))
+  allPosSpecCons : ∀{xs} → allPosSpec xs → ISF[ allPosIS ] allPosSpec xs
+  allPosSpecCons {[]} _ = allp-Λ , (tt , (refl , tt , λ ()))
+  allPosSpecCons {(x ∷ xs)} Sxs = allp-t , ((x , xs) , (refl , (Sxs here , λ {Fin.zero → λ mem → Sxs (there mem)})))
 
-  allP-complete : ∀{xs} → allP-S xs → allPos xs
-  allP-complete ap = coind[ allP-IS ] allP-S allP-cons ap
+  allPosComplete : ∀{xs} → allPosSpec xs → allPos xs
+  allPosComplete = coind[ allPosIS ] allPosSpec allPosSpecCons

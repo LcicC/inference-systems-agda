@@ -21,11 +21,11 @@ module Examples.Lambda.BigStep where
   U : Set
   U = Term 0 × Value∞
 
-  data BigStepIS-RN : Set where
-    VAL APP L-DIV R-DIV : BigStepIS-RN
+  data BigStepRN : Set where
+    VAL APP L-DIV R-DIV : BigStepRN
 
-  data BigStepCOIS-RN : Set where
-    COA : BigStepCOIS-RN
+  data BigStepCoRN : Set where
+    COA : BigStepCoRN
 
   coa-r : MetaRule U
   coa-r .MetaRule.C = Term 0
@@ -43,8 +43,8 @@ module Examples.Lambda.BigStep where
 
   app-r : MetaRule U
   app-r .MetaRule.C = Term 0 × Term 1 × Term 0 × Value × Value∞
-  app-r .MetaRule.comp (t1 , t1' , t2 , v , v-∞) =
-    (t1 , val (lambda t1'))  ∷ (t2 , val v) ∷ (subst-0 t1' (inj-val-term v) , v-∞) ∷ [] ,
+  app-r .MetaRule.comp (t1 , t , t2 , v , v-∞) =
+    (t1 , val (lambda t))  ∷ (t2 , val v) ∷ (subst-0 t (inj-val-term v) , v-∞) ∷ [] ,
     -------------------------
     (app t1 t2 , v-∞) , ⊤
   
@@ -63,14 +63,14 @@ module Examples.Lambda.BigStep where
     (app t1 t2 , v∞) , ⊤
   
   BigStepIS : IS U
-  BigStepIS .IS.Names = BigStepIS-RN
+  BigStepIS .IS.Names = BigStepRN
   BigStepIS .IS.rules VAL = val-r
   BigStepIS .IS.rules APP = app-r
   BigStepIS .IS.rules L-DIV = l-div-r
   BigStepIS .IS.rules R-DIV = r-div-r
   
   BigStepCOIS : IS U
-  BigStepCOIS .IS.Names  = BigStepCOIS-RN
+  BigStepCOIS .IS.Names  = BigStepCoRN
   BigStepCOIS .IS.rules COA = coa-r
   
   _⇓_ : Term 0 → Value∞ → Size → Set

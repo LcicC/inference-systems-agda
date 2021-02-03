@@ -23,8 +23,8 @@ open import Examples.Lambda.SmallStep
 module Examples.Lambda.Proofs where
 
   Spec : BigStepU → Set
-  Spec (e , val x) = e ↓* inj-val-term x
-  Spec (e , v∞) = ∀{i} → ∞SS e i
+  Spec (e , val x) = e ⇒* inj-val-term x
+  Spec (e , v∞) = ∀{i} → ⇒∞ e i
 
   {- Soundness -}
   Spec-val : BigStepU → Set
@@ -40,13 +40,13 @@ module Examples.Lambda.Proofs where
     inj-l-app _ (prem zero refl) ◅◅ inj-r-app _ (prem (suc zero) refl) ◅◅ subst ◅ prem (suc (suc zero)) refl
   Spec-closed (inj₂ COA) s_ _ ()
 
-  ⇓ᵢ-to-↓* : ∀{e v} → e ⇓ᵢ v → Spec-val (e , v)
-  ⇓ᵢ-to-↓* = ind[ BigStepIS ∪ BigStepCOIS ] Spec-val Spec-closed
+  ⇓ᵢ-to-⇒* : ∀{e v} → e ⇓ᵢ v → Spec-val (e , v)
+  ⇓ᵢ-to-⇒* = ind[ BigStepIS ∪ BigStepCOIS ] Spec-val Spec-closed
 
-  bs-sound-v : ∀{e v} → (∀{i} → (e ⇓ (val v)) i) → e ↓* (inj-val-term v)
-  bs-sound-v r = ⇓ᵢ-to-↓* (sfcoind-to-ind r) refl
+  bs-sound-v : ∀{e v} → (∀{i} → (e ⇓ (val v)) i) → e ⇒* (inj-val-term v)
+  bs-sound-v r = ⇓ᵢ-to-⇒* (sfcoind-to-ind r) refl
 
-  subject-red-⇓ : ∀{e e' v} → (∀{i} → (e ⇓ v) i) → e ↓ e' → (∀{i} → (e' ⇓ v) i)
+  subject-red-⇓ : ∀{e e' v} → (∀{i} → (e ⇓ v) i) → e ⇒ e' → (∀{i} → (e' ⇓ v) i)
   subject-red-⇓ bs (fold (β , (e , v) , eq , tt , _)) with bs
   subject-red-⇓ bs (fold (β , (e , v) , () , tt , _)) | sfold (VAL , lambda x , refl , _ , prem)
   subject-red-⇓ bs (fold (β , (e , lambda x) , refl , tt , _)) | sfold (APP , (.(lambda e) , _ , .(lambda x) , v , _) , refl , _ , prem)
@@ -82,7 +82,7 @@ module Examples.Lambda.Proofs where
     let prems = λ{zero → prem zero .force ; (suc zero) → rec} in
     apply-sfcoind R-DIV tt prems
 
-  progress : ∀{e} →(∀{i} → (e ⇓ v∞) i) → Σ[ e' ∈ Term 0 ] (e ↓ e')
+  progress : ∀{e} →(∀{i} → (e ⇓ v∞) i) → Σ[ e' ∈ Term 0 ] (e ⇒ e')
   progress {e} bs with bs
   progress  bs | sfold (APP , _ , refl , _ , prem) with bs-sound-v (prem zero .force)
   progress  bs | sfold (APP , (_ , e1' , _ , _ , .v∞) , refl , _ , prem) | ε with bs-sound-v (prem (suc zero) .force)
@@ -93,16 +93,16 @@ module Examples.Lambda.Proofs where
   progress  bs | sfold (APP , (e1 , _ , e2 , _ , .v∞) , refl , _ , prem) | x ◅ _ =
     app _ e2 , apply-ind L-APP tt λ{zero → x}
   progress  bs | sfold (L-DIV , (e1 , e2) , refl , _ , prem) =
-    let e1' , e1↓e1' = progress (prem zero .force) in
-    app e1' e2 , apply-ind L-APP tt λ{zero → e1↓e1'}
+    let e1' , e1⇒e1' = progress (prem zero .force) in
+    app e1' e2 , apply-ind L-APP tt λ{zero → e1⇒e1'}
   progress  bs | sfold (R-DIV , (e1 , e2 , v) , refl , _ , prem) with bs-sound-v (prem zero .force)
   progress  bs | sfold (R-DIV , (.(inj-val-term _) , e2 , (lambda e)) , refl , _ , prem) | ε =
-    let e2' , e2↓e2' = progress (prem (suc zero) .force) in
-    app (lambda e) e2' , apply-ind R-APP tt λ{zero → e2↓e2'}
+    let e2' , e2⇒e2' = progress (prem (suc zero) .force) in
+    app (lambda e) e2' , apply-ind R-APP tt λ{zero → e2⇒e2'}
   progress  bs | sfold (R-DIV , (e1 , e2 , (lambda e)) , refl , _ , prem) | x ◅ _ =
     app _ e2 , apply-ind L-APP tt λ{zero → x}
 
-  bs-sound-∞ : ∀{e} → (∀{i} → (e ⇓ v∞) i) → (∀{i} → ∞SS e i)
+  bs-sound-∞ : ∀{e} → (∀{i} → (e ⇓ v∞) i) → (∀{i} → ⇒∞ e i)
   bs-sound-∞ bs with progress bs
   ... | e' , ss = step ss λ where .force → bs-sound-∞ (subject-red-⇓ bs ss)
 
@@ -123,7 +123,7 @@ module Examples.Lambda.Proofs where
   inv-app bs | inj₁ APP , _ , refl , _ , pr = _ , _ , pr zero , pr (suc zero) , pr (suc (suc zero))
   inv-app bs | inj₂ COA , _ , () , _ , _
 
-  subject-exp : ∀{e e' v} → e ↓ e' → e' ⇓ᵢ v → e ⇓ᵢ v
+  subject-exp : ∀{e e' v} → e ⇒ e' → e' ⇓ᵢ v → e ⇓ᵢ v
   subject-exp {.(app (lambda e1) (inj-val-term v))} {_} {v'} (fold (β , (e1 , v) , refl , tt , _)) bs =
     let prem-e1 = IS.fold (inj₁ VAL , lambda e1 , refl , tt , λ ()) in
     let prem-e2 = IS.fold (inj₁ VAL , v , refl , tt , λ ()) in
@@ -142,22 +142,22 @@ module Examples.Lambda.Proofs where
   subject-exp {.(app (inj-val-term v) e2)} {.(app (inj-val-term v) e2')} {v∞} (fold (R-APP , (v , e2 , e2') , refl , _)) bs =
     apply-ind (inj₂ COA) tt λ ()
 
-  bounded-v : ∀{e v} → e ↓* inj-val-term v → e ⇓ᵢ val v
+  bounded-v : ∀{e v} → e ⇒* inj-val-term v → e ⇓ᵢ val v
   bounded-v ε = apply-ind (inj₁ VAL) tt λ ()
   bounded-v (x ◅ ss) = subject-exp x (bounded-v ss)
 
-  bounded-∞ : ∀{e} → (∀{i} → ∞SS e i) → e ⇓ᵢ v∞
+  bounded-∞ : ∀{e} → (∀{i} → ⇒∞ e i) → e ⇓ᵢ v∞
   bounded-∞ {e} ss = apply-ind (inj₂ COA) tt λ ()
   
   bounded : ∀{e v} → Spec (e , v) → e ⇓ᵢ v
   bounded {_} {val _} = bounded-v
   bounded {_} {v∞} = bounded-∞
 
-  get-prem-cons : ∀{e1 e2 v} → app e1 e2 ↓* (inj-val-term v) →
+  get-prem-cons : ∀{e1 e2 v} → app e1 e2 ⇒* (inj-val-term v) →
     Σ[ e1' ∈ Term 1 ] Σ[ e2' ∈ Value ]
-      (e1 ↓* lambda e1') ×
-      (e2 ↓* inj-val-term e2') ×
-      (subst-0 e1' (inj-val-term e2') ↓* (inj-val-term v))
+      (e1 ⇒* lambda e1') ×
+      (e2 ⇒* inj-val-term e2') ×
+      (subst-0 e1' (inj-val-term e2') ⇒* (inj-val-term v))
   get-prem-cons {.(lambda e1)} {.(inj-val-term v)} {lambda _} (fold (β , (e1 , v) , refl , _ , _) ◅ ss) =
     e1 , v , ε , ε , ss
   get-prem-cons {.e1} {.e2} {lambda _} (fold (L-APP , (e1 , e1' , e2) , refl , _ , pr) ◅ ss) =
@@ -167,32 +167,32 @@ module Examples.Lambda.Proofs where
     let e1' , e2'' , rec-e1 , rec-e2' , rec-subst = get-prem-cons ss in
     e1' , e2'' , rec-e1 , pr zero ◅ rec-e2' , rec-subst
 
-  consistent-v : ∀{e v} → e ↓* inj-val-term v → IS.ISF[ BigStepIS ] Spec (e , val v)
+  consistent-v : ∀{e v} → e ⇒* inj-val-term v → IS.ISF[ BigStepIS ] Spec (e , val v)
   consistent-v {.(lambda _)} {lambda _} ε = VAL , _ , refl , tt , λ ()
-  consistent-v {lambda _} {lambda _} (x ◅ ss) = ⊥-elim (val-not-reduce↓ x)
+  consistent-v {lambda _} {lambda _} (x ◅ ss) = ⊥-elim (val-not-reduce⇒ x)
   consistent-v {app e1 e2} {lambda _} (x ◅ ss) =
-    let e1' , e2' , e1↓* , e2↓* , subst↓* = get-prem-cons (x ◅ ss) in
-    let prems = λ{zero → e1↓* ; (suc zero) → e2↓* ; (suc (suc zero)) → subst↓*} in
+    let e1' , e2' , e1⇒* , e2⇒* , subst⇒* = get-prem-cons (x ◅ ss) in
+    let prems = λ{zero → e1⇒* ; (suc zero) → e2⇒* ; (suc (suc zero)) → subst⇒*} in
     APP , (e1 , e1' , e2 , e2' , _) , refl , tt , prems
     
   postulate
     excluded-middle : ExcludedMiddle ∅
   
-  lemma-divergence : ∀{e1 e2} → (∀{i} → ∞SS (app e1 e2) i) →
-    (∀{i} → ∞SS e1 i) ⊎
-    e1 ConvergesSS × (∀{i} → ∞SS e2 i) ⊎
-    Σ[ t1 ∈ Term 1 ] Σ[ v ∈ Value ] (e1 ↓* lambda t1) × (e2 ↓* inj-val-term v) × (∀{i} → ∞SS (subst-0 t1 (inj-val-term v)) i)
+  lemma-divergence : ∀{e1 e2} → (∀{i} → ⇒∞ (app e1 e2) i) →
+    (∀{i} → ⇒∞ e1 i) ⊎
+    e1 ConvergesSS × (∀{i} → ⇒∞ e2 i) ⊎
+    Σ[ t1 ∈ Term 1 ] Σ[ v ∈ Value ] (e1 ⇒* lambda t1) × (e2 ⇒* inj-val-term v) × (∀{i} → ⇒∞ (subst-0 t1 (inj-val-term v)) i)
   lemma-divergence {e1} {e2} ss with excluded-middle {e1 ConvergesSS}
   lemma-divergence {e1} {e2} ss | no ¬e1-conv = inj₁ (div-app-l-not-conv ss ¬e1-conv)
   lemma-divergence {e1} {e2} ss | yes e1-conv with excluded-middle {e2 ConvergesSS}
   lemma-divergence {e1} {e2} ss | yes e1-conv | no ¬e2-conv =
     inj₂ (inj₁ (e1-conv , div-app-r-not-conv ss (proj₂ e1-conv) ¬e2-conv))
   lemma-divergence {e1} {e2} ss | yes (lambda _ , red-e1) | yes (_ , red-e2) =
-    inj₂ (inj₂ (_ , _ , ( red-e1 , red-e2 , app-subst-∞SS₁ red-e1 red-e2 ss)))
+    inj₂ (inj₂ (_ , _ , ( red-e1 , red-e2 , app-subst-⇒∞₁ red-e1 red-e2 ss)))
 
-  consistent-∞ : ∀{e} → (∀{i} → ∞SS e i) → IS.ISF[ BigStepIS ] Spec (e , v∞)
+  consistent-∞ : ∀{e} → (∀{i} → ⇒∞ e i) → IS.ISF[ BigStepIS ] Spec (e , v∞)
   consistent-∞ {e} ss with ss
-  consistent-∞ {lambda e} ss | step x _ = ⊥-elim (val-not-reduce↓ x)
+  consistent-∞ {lambda e} ss | step x _ = ⊥-elim (val-not-reduce⇒ x)
   consistent-∞ {app e₁ e₂} ss | step x x₁ with lemma-divergence (step x x₁)
   consistent-∞ {app e₁ e₂} ss | step x x₁ | inj₁ e1-div =
     L-DIV , _ , refl , tt , λ{zero → e1-div}

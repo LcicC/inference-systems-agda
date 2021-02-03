@@ -38,10 +38,10 @@ module is-lib.InfSys.Base {l} where
     get-prem c i = lookup (prems c) i
 
     RF[_] : (U → Set l) → (U → Set l)
-    RF[_] J u = Σ[ c ∈ C ] (u ≡ conclu c) × (side c) × (∀ i → J (get-prem c i))
+    RF[_] P u = Σ[ c ∈ C ] (u ≡ conclu c) × (side c) × (∀ i → P (get-prem c i))
 
     RClosed : (U → Set l) → Set l
-    RClosed J = ∀ {c} → side c → (∀ i → J (get-prem c i)) → J (conclu c)
+    RClosed P = ∀ {c} → side c → (∀ i → P (get-prem c i)) → P (conclu c)
     
   open MetaRule
 
@@ -54,11 +54,11 @@ module is-lib.InfSys.Base {l} where
       rules : Names → MetaRule U   -- rules
 
     ISF[_] : (U → Set l) → (U → Set l)
-    ISF[_] J u = Σ[ rn ∈ Names ] RF[ rules rn ] J u
+    ISF[_] P u = Σ[ rn ∈ Names ] RF[ rules rn ] P u
 
     ISClosed : (U → Set l) → Set l
-    ISClosed J = ∀ rn → RClosed (rules rn) J
-    --to do: ISClosed is S  equivalente ∀ u → ⟦ is ⟧ S u → S u
+    ISClosed P = ∀ rn → RClosed (rules rn) P
+
   open IS
 
   ISfromPred : {U : Set l} → (U → Set l) → IS U

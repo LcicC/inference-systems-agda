@@ -83,9 +83,9 @@ module is-lib.InfSys.Base {l} where
   {- Properties -}
   
   -- closed implies prefix
-  closed⇒prefix : (m : MetaRule U) → ∀{J u} → RClosed m J → RF[ m ] J u → J u
+  closed⇒prefix : (m : MetaRule U) → ∀{P u} → RClosed m P → RF[ m ] P u → P u
   closed⇒prefix _ cl (c , refl , sd , pr) = cl sd pr
 
   -- prefix implies closed
-  prefix⇒closed : (m : MetaRule U) → ∀{J} → (∀{u} → RF[ m ] J u → J u) → RClosed m J
+  prefix⇒closed : (m : MetaRule U) → ∀{P} → (∀{u} → RF[ m ] P u → P u) → RClosed m P
   prefix⇒closed _ f = λ sd prems → f (_ , refl , sd , prems)

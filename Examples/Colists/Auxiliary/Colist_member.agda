@@ -4,7 +4,7 @@ open import Size
 open import Data.Empty
 open import Relation.Binary.PropositionalEquality
 
-module Examples.Colist.Auxiliary.Colist_memberOf {A : Set} where
+module Examples.Colists.Auxiliary.Colist_member {A : Set} where
 
   data _∈_ : A → Colist A ∞ → Set where
     here : ∀ {x xs} → x ∈ (x ∷ xs)

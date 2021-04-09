@@ -12,8 +12,8 @@ module Examples.Lambda.Lambda where
   data Value : Set where
     lambda : Term 1 → Value
 
-  inj-val-term : Value → Term 0
-  inj-val-term (lambda x) = lambda x
+  term : Value → Term 0
+  term (lambda x) = lambda x
 
   {- Substitution -}
   ext : ∀{n m} → (Fin n → Fin m) → (Fin (suc n) → Fin (suc m))

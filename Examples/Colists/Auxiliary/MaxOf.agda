@@ -2,7 +2,7 @@ open import Data.Nat
 open import Relation.Binary.PropositionalEquality
 open import Data.Sum
 
-module Examples.Colist.Auxiliary.MaxOf where
+module Examples.Colists.Auxiliary.MaxOf where
 
   max : ℕ → ℕ → ℕ
   max zero zero = zero

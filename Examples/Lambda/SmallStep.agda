@@ -1,5 +1,5 @@
 open import Data.Nat
-open import Data.List
+open import Data.Vec
 open import Data.Fin
 open import Data.Product
 open import Data.Unit
@@ -22,41 +22,41 @@ module Examples.Lambda.SmallStep where
   data SmallStepRN : Set where
     β L-APP R-APP : SmallStepRN
 
-  β-r : MetaRule U
-  β-r .MetaRule.C = Term 1 × Value
-  β-r .MetaRule.comp (t , v) =
+  β-r : FinMetaRule U
+  β-r .Ctx = Term 1 × Value
+  β-r .comp (t , v) =
     [] ,
     -------------------------
-    (app (lambda t) (inj-val-term v) , subst-0 t (inj-val-term v)) , ⊤
+    (app (lambda t) (term v) , subst-0 t (term v))
 
-  l-app-r : MetaRule U
-  l-app-r .MetaRule.C = Term 0 × Term 0 × Term 0
-  l-app-r .MetaRule.comp (t1 , t1' , t2) =
+  l-app-r : FinMetaRule U
+  l-app-r .Ctx = Term 0 × Term 0 × Term 0
+  l-app-r .comp (t1 , t1' , t2) =
     (t1 , t1') ∷ [] ,
     -------------------------
-    ((app t1 t2) , (app t1' t2)) , ⊤
+    ((app t1 t2) , (app t1' t2))
 
-  r-app-r : MetaRule U
-  r-app-r .MetaRule.C = Value × Term 0 × Term 0
-  r-app-r .MetaRule.comp (v , t2 , t2') =
+  r-app-r : FinMetaRule U
+  r-app-r .Ctx = Value × Term 0 × Term 0
+  r-app-r .comp (v , t2 , t2') =
     (t2 , t2') ∷ [] ,
     -------------------------
-    ((app (inj-val-term v) t2) , app (inj-val-term v) t2') , ⊤
+    ((app (term v) t2) , app (term v) t2')
 
-  SmallStep : IS U
-  SmallStep .IS.Names = SmallStepRN
-  SmallStep .IS.rules β = β-r
-  SmallStep .IS.rules L-APP = l-app-r
-  SmallStep .IS.rules R-APP = r-app-r
+  SmallStepIS : IS U
+  SmallStepIS .Names = SmallStepRN
+  SmallStepIS .rules β = from β-r
+  SmallStepIS .rules L-APP = from l-app-r
+  SmallStepIS .rules R-APP = from r-app-r
 
   _⇒_ : Term 0 → Term 0 → Set
-  t ⇒ t' = Ind⟦ SmallStep ⟧ (t , t')
+  t ⇒ t' = Ind⟦ SmallStepIS ⟧ (t , t')
 
   _⇒*_ : Term 0 → Term 0 → Set
   _⇒*_ = Star _⇒_
 
   _ConvergesSS : Term 0 → Set
-  t ConvergesSS = Σ[ v ∈ Value ] (t ⇒* inj-val-term v)
+  t ConvergesSS = Σ[ v ∈ Value ] (t ⇒* term v)
 
   data ⇒∞ : Term 0 → Size → Set where
     step : ∀{t t' i} → t ⇒ t' → Thunk (⇒∞ t') i → ⇒∞ t i
@@ -65,28 +65,28 @@ module Examples.Lambda.SmallStep where
   inj-l-app : ∀{t1 t1'} t2 → t1 ⇒* t1' → (app t1 t2) ⇒* (app t1' t2)
   inj-l-app _ ε = ε
   inj-l-app {t1} t2 (fold x ◅ red) =
-    apply-ind L-APP tt (λ {zero → IS.fold x}) ◅ inj-l-app t2 red
+    apply-ind L-APP _ (λ {zero → IS.fold x}) ◅ inj-l-app t2 red
   
-  inj-r-app : ∀{t2 t2'} v → t2 ⇒* t2' → (app (inj-val-term v) t2) ⇒* (app (inj-val-term v) t2')
+  inj-r-app : ∀{t2 t2'} v → t2 ⇒* t2' → (app (term v) t2) ⇒* (app (term v) t2')
   inj-r-app _ ε = ε
   inj-r-app {t2} v (fold x ◅ red) =
-    apply-ind R-APP tt (λ {zero → IS.fold x}) ◅ inj-r-app v red
+    apply-ind R-APP _ (λ {zero → IS.fold x}) ◅ inj-r-app v red
     
-  val-not-reduce⇒ : ∀{v e'} → ¬ (inj-val-term v ⇒ e')
+  val-not-reduce⇒ : ∀{v e'} → ¬ (term v ⇒ e')
   val-not-reduce⇒ {lambda _} (fold (β , c , () , pr))
   val-not-reduce⇒ {lambda _} (fold (L-APP , c , () , pr))
   val-not-reduce⇒ {lambda _} (fold (R-APP , c , () , pr))
 
   ⇒-deterministic : ∀{e e' e''} → e ⇒ e' → e ⇒ e'' → e' ≡ e''
   ⇒-deterministic (fold (β , (_ , lambda _) , refl , _)) (fold (β , (_ , lambda _) , refl , _)) = refl
-  ⇒-deterministic (fold (β , (_ , lambda _) , refl , _)) (fold (L-APP , _ , refl , _ , pr)) = ⊥-elim (val-not-reduce⇒ (pr zero))
-  ⇒-deterministic (fold (β , (_ , lambda _) , refl , _)) (fold (R-APP , (lambda _ , _) , refl , _ , pr)) = ⊥-elim (val-not-reduce⇒ (pr zero))
-  ⇒-deterministic (fold (L-APP , _ , refl , _ , pr)) (fold (β , _ , refl , _)) = ⊥-elim (val-not-reduce⇒ (pr zero))
-  ⇒-deterministic (fold (L-APP , _ , refl , _ , pr)) (fold (L-APP , _ , refl , _ , pr')) = cong (λ x → app x _) (⇒-deterministic (pr zero) (pr' zero))
-  ⇒-deterministic (fold (L-APP , _ , refl , _ , pr)) (fold (R-APP , _ , refl , _)) = ⊥-elim (val-not-reduce⇒ (pr zero))
-  ⇒-deterministic (fold (R-APP , (lambda _ , _) , refl , _ , pr)) (fold (β , _ , refl , _)) = ⊥-elim (val-not-reduce⇒ (pr zero))
-  ⇒-deterministic (fold (R-APP , (lambda _ , _) , refl , _ , _)) (fold (L-APP , _ , refl , _ , pr)) = ⊥-elim (val-not-reduce⇒ (pr zero))
-  ⇒-deterministic (fold (R-APP , (lambda _ , _) , refl , _ , pr)) (fold (R-APP , (lambda _ , _) , refl , _ , pr')) = cong (λ x → app _ x) (⇒-deterministic (pr zero) (pr' zero))
+  ⇒-deterministic (fold (β , (_ , lambda _) , refl , _)) (fold (L-APP , _ , refl , pr)) = ⊥-elim (val-not-reduce⇒ (pr zero))
+  ⇒-deterministic (fold (β , (_ , lambda _) , refl , _)) (fold (R-APP , (lambda _ , _) , refl , pr)) = ⊥-elim (val-not-reduce⇒ (pr zero))
+  ⇒-deterministic (fold (L-APP , _ , refl , pr)) (fold (β , _ , refl , _)) = ⊥-elim (val-not-reduce⇒ (pr zero))
+  ⇒-deterministic (fold (L-APP , _ , refl , pr)) (fold (L-APP , _ , refl , pr')) = cong (λ x → app x _) (⇒-deterministic (pr zero) (pr' zero))
+  ⇒-deterministic (fold (L-APP , _ , refl , pr)) (fold (R-APP , _ , refl , _)) = ⊥-elim (val-not-reduce⇒ (pr zero))
+  ⇒-deterministic (fold (R-APP , (lambda _ , _) , refl , pr)) (fold (β , _ , refl , _)) = ⊥-elim (val-not-reduce⇒ (pr zero))
+  ⇒-deterministic (fold (R-APP , (lambda _ , _) , refl , _)) (fold (L-APP , _ , refl , pr)) = ⊥-elim (val-not-reduce⇒ (pr zero))
+  ⇒-deterministic (fold (R-APP , (lambda _ , _) , refl , pr)) (fold (R-APP , (lambda _ , _) , refl , pr')) = cong (λ x → app _ x) (⇒-deterministic (pr zero) (pr' zero))
 
   ⇒*-preserves-⇒∞ : ∀{e e'} → (∀{i} → ⇒∞ e i) → e ⇒* e' → (∀{i} → ⇒∞ e' i)
   ⇒*-preserves-⇒∞ ss ε = ss
@@ -95,50 +95,50 @@ module Examples.Lambda.SmallStep where
     let e'-eq = ⇒-deterministic x₁ x in
     ⇒*-preserves-⇒∞ (≡.subst (λ x → (∀{i} → ⇒∞ x i)) e'-eq (x₂ .force)) red-e
 
-  app-subst-⇒∞ : ∀{e v} → (∀{i} → ⇒∞ (app (lambda e) (inj-val-term v)) i) → (∀{i} → ⇒∞ (subst-0 e (inj-val-term v)) i)
+  app-subst-⇒∞ : ∀{e v} → (∀{i} → ⇒∞ (app (lambda e) (term v)) i) → (∀{i} → ⇒∞ (subst-0 e (term v)) i)
   app-subst-⇒∞ ss with ss
   app-subst-⇒∞ {_} {lambda _} ss | step (fold (β , (_ , lambda _) , refl , _)) rec = rec .force
-  app-subst-⇒∞ {_} {lambda _} ss | step (fold (L-APP , _ , refl , _ , pr)) _ = ⊥-elim (val-not-reduce⇒ (pr zero))
-  app-subst-⇒∞ {_} {lambda _} ss | step (fold (R-APP , (lambda _ , _) , refl , _ , pr)) rec = ⊥-elim (val-not-reduce⇒ (pr zero))
+  app-subst-⇒∞ {_} {lambda _} ss | step (fold (L-APP , _ , refl , pr)) _ = ⊥-elim (val-not-reduce⇒ (pr zero))
+  app-subst-⇒∞ {_} {lambda _} ss | step (fold (R-APP , (lambda _ , _) , refl , pr)) rec = ⊥-elim (val-not-reduce⇒ (pr zero))
 
-  app-subst-⇒∞₁ : ∀{e1 e1' e2 v} → e1 ⇒* lambda e1' → e2 ⇒* inj-val-term v → (∀{i} → ⇒∞ (app e1 e2) i) → (∀{i} → ⇒∞ (subst-0 e1' (inj-val-term v)) i)
+  app-subst-⇒∞₁ : ∀{e1 e1' e2 v} → e1 ⇒* lambda e1' → e2 ⇒* term v → (∀{i} → ⇒∞ (app e1 e2) i) → (∀{i} → ⇒∞ (subst-0 e1' (term v)) i)
   app-subst-⇒∞₁ red-e1 red-e2 ss =
     let red-left = ⇒*-preserves-⇒∞ ss (inj-l-app _ red-e1) in
     let red-right = ⇒*-preserves-⇒∞ red-left (inj-r-app _ red-e2) in
     app-subst-⇒∞ red-right
 
-  not-conv-next : ∀{e e'} → ¬ (Σ[ v ∈ Value ] e ⇒* inj-val-term v) → e ⇒ e' → ¬ (Σ[ v ∈ Value ] e' ⇒* inj-val-term v)
+  not-conv-next : ∀{e e'} → ¬ (Σ[ v ∈ Value ] e ⇒* term v) → e ⇒ e' → ¬ (Σ[ v ∈ Value ] e' ⇒* term v)
   not-conv-next {e} {e'} n ss-e (v , ss-e') = ⊥-elim (n (v , ss-e ◅ ss-e'))
   
   div-app-l-not-conv : ∀{e1 e2} → (∀{i} → ⇒∞ (app e1 e2) i) → ¬ (e1 ConvergesSS) → (∀{i} → ⇒∞ e1 i)
   div-app-l-not-conv ss n-conv with ss
   div-app-l-not-conv ss n-conv | step (fold (β , _ , refl , _)) _ = ⊥-elim (n-conv (_ , ε))
-  div-app-l-not-conv ss n-conv | step (fold (L-APP , _ , refl , _ , pr)) x₁ =
+  div-app-l-not-conv ss n-conv | step (fold (L-APP , _ , refl , pr)) x₁ =
     step (pr zero) λ where .force → div-app-l-not-conv (x₁ .force) (not-conv-next n-conv (pr zero))
   div-app-l-not-conv ss n-conv | step (fold (R-APP , _ , refl , _)) _ = ⊥-elim (n-conv (_ , ε))
 
-  div-app-r-not-conv : ∀{e1 e2 v} → (∀{i} → ⇒∞ (app e1 e2) i) → e1 ⇒* inj-val-term v → ¬ (e2 ConvergesSS) → (∀{i} → ⇒∞ e2 i)
+  div-app-r-not-conv : ∀{e1 e2 v} → (∀{i} → ⇒∞ (app e1 e2) i) → e1 ⇒* term v → ¬ (e2 ConvergesSS) → (∀{i} → ⇒∞ e2 i)
   div-app-r-not-conv ss red-e1 ¬e2-conv with ss
   div-app-r-not-conv ss red-e1 ¬e2-conv | step (fold (β , _ , refl , _)) _ = ⊥-elim (¬e2-conv (_ , ε))
-  div-app-r-not-conv ss ε ¬e2-conv | step (fold (L-APP , _ , refl , _ , pr)) _ = ⊥-elim (val-not-reduce⇒ (pr zero))
-  div-app-r-not-conv ss (x ◅ red-e1) ¬e2-conv | step (fold (L-APP , _ , refl , _ , pr)) x₁ =
+  div-app-r-not-conv ss ε ¬e2-conv | step (fold (L-APP , _ , refl , pr)) _ = ⊥-elim (val-not-reduce⇒ (pr zero))
+  div-app-r-not-conv ss (x ◅ red-e1) ¬e2-conv | step (fold (L-APP , _ , refl , pr)) x₁ =
     div-app-r-not-conv (λ {i} → ≡.subst (λ x → ⇒∞ (app x _) i) (⇒-deterministic (pr zero) x) (x₁ .force)) red-e1 ¬e2-conv
-  div-app-r-not-conv ss red-e1 ¬e2-conv | step (fold (R-APP , (lambda _ , _) , refl , _ , pr)) x₁ =
+  div-app-r-not-conv ss red-e1 ¬e2-conv | step (fold (R-APP , (lambda _ , _) , refl , pr)) x₁ =
     step (pr zero) λ where .force → div-app-r-not-conv (x₁ .force) red-e1 (not-conv-next ¬e2-conv (pr zero))
 
   ⇒∞-reduce-⇒ : ∀{e} → (∀{i} → ⇒∞ e i) → Σ[ e' ∈ Term 0 ] e ⇒ e' × (∀{i} → ⇒∞ e' i)
   ⇒∞-reduce-⇒ ss with ss
   ⇒∞-reduce-⇒ ss | step s s' = _ , s , s' .force
   
-  val-not-⇒∞ : ∀{e v} → e ⇒ inj-val-term v → ¬ (∀{i} → ⇒∞ e i)
+  val-not-⇒∞ : ∀{e v} → e ⇒ term v → ¬ (∀{i} → ⇒∞ e i)
   val-not-⇒∞ {e} {v} ss ss' with ss'
   val-not-⇒∞ {.(app (lambda (var zero)) (lambda _))} {lambda _} (fold (β , (var zero , lambda _) , refl , _)) ss' | step (fold (β , (.(var zero) , lambda _) , refl , _)) rec =
     ⊥-elim (val-not-reduce⇒ (proj₁ (proj₂ (⇒∞-reduce-⇒ (rec .force)))))
   val-not-⇒∞ {.(app (lambda (lambda _)) (lambda _))} {lambda _} (fold (β , (lambda _ , lambda _) , refl , _)) ss' | step (fold (β , (.(lambda _) , lambda _) , refl , _)) rec =
     ⊥-elim (val-not-reduce⇒ (proj₁ (proj₂ (⇒∞-reduce-⇒ (rec .force)))))
-  val-not-⇒∞ {.(app (lambda e1) e2)} {lambda _} (fold (β , (_ , lambda _) , _)) ss' | step (fold (L-APP , (lambda e1 , e1' , e2) , refl , _ , pr)) rec =
+  val-not-⇒∞ {.(app (lambda e1) e2)} {lambda _} (fold (β , (_ , lambda _) , _)) ss' | step (fold (L-APP , (lambda e1 , e1' , e2) , refl , pr)) rec =
     ⊥-elim (val-not-reduce⇒ (pr zero))
-  val-not-⇒∞ {.(app e1 e2)} {lambda _} (fold (L-APP , _ , () , _)) ss' | step (fold (L-APP , (e1 , e1' , e2) , refl , _ , _)) _
-  val-not-⇒∞ {.(app e1 e2)} {lambda _} (fold (R-APP , (lambda _ , _) , () , _)) ss' | step (fold (L-APP , (e1 , e1' , e2) , refl , _ , pr)) _
-  val-not-⇒∞ {.(app (lambda _) (lambda e2))} {lambda _} (fold (β , (_ , lambda _) , _ , _)) ss' | step (fold (R-APP , (lambda _ , lambda e2 , e2') , refl , _ , pr)) rec =
+  val-not-⇒∞ {.(app e1 e2)} {lambda _} (fold (L-APP , _ , () , _)) ss' | step (fold (L-APP , (e1 , e1' , e2) , refl , _)) _
+  val-not-⇒∞ {.(app e1 e2)} {lambda _} (fold (R-APP , (lambda _ , _) , () , _)) ss' | step (fold (L-APP , (e1 , e1' , e2) , refl , pr)) _
+  val-not-⇒∞ {.(app (lambda _) (lambda e2))} {lambda _} (fold (β , (_ , lambda _) , _)) ss' | step (fold (R-APP , (lambda _ , lambda e2 , e2') , refl , pr)) rec =
     ⊥-elim (val-not-reduce⇒ (pr zero))

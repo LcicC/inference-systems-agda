@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+-- This is part of Agda Inference Systems
+
+{-# OPTIONS --sized-types --guardedness #-}
+
 open import Data.Product
 open import Data.Vec
 open import Codata.Colist as Colist

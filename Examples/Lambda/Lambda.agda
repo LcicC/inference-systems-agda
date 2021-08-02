@@ -1,3 +1,6 @@
+--------------------------------------------------------------------------------
+-- This is part of Agda Inference Systems
+
 open import Data.Nat
 open import Data.Fin
 

@@ -1,3 +1,6 @@
+--------------------------------------------------------------------------------
+-- This is part of Agda Inference Systems
+
 open import Data.Nat
 open import Relation.Binary.PropositionalEquality
 open import Data.Sum

@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+-- This is part of Agda Inference Systems
+
+{-# OPTIONS --sized-types #-}
+
 open import Relation.Nullary
 open import Relation.Nullary.Decidable
 open import Data.Nat

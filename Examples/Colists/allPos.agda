@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+-- This is part of Agda Inference Systems
+
+{-# OPTIONS --sized-types --guardedness #-}
+
 open import Data.Product
 open import Data.Vec
 open import Data.Unit
@@ -27,7 +32,7 @@ module Examples.Colists.allPos where
     []
 
   allP-t-r : FinMetaRule U
-  allP-t-r .Ctx = Σ[ (x , _) ∈ ℕ × Thunk (Colist ℕ) ∞ ] x > 0
+  allP-t-r .Ctx = Σ[ (x , _) ∈ ℕ × Thunk (Colist ℕ) ∞ ] x Data.Nat.> 0
   allP-t-r .comp ((x , xs) , _) = 
     xs .force ∷ [] ,
     -----------------
@@ -42,7 +47,7 @@ module Examples.Colists.allPos where
   allPos = CoInd⟦ allPosIS ⟧
 
   allPosSpec : U → Set
-  allPosSpec xs = ∀{x} → x ∈ xs → x > 0
+  allPosSpec xs = ∀{x} → x ∈ xs → x Data.Nat.> 0
 
   allPosSound : allPos ⊆ allPosSpec
   allPosSound {x ∷ xs} ap mem with ap .CoInd⟦_⟧.unfold
@@ -65,7 +70,7 @@ module Examples.Colists.allPos where
 
   allPosCont : ISCont
   allPosCont .Command [] = ⊤
-  allPosCont .Command (x ∷ xs) = x > 0
+  allPosCont .Command (x ∷ xs) = x Data.Nat.> 0
   allPosCont .Response {[]} tt = ⊥
   allPosCont .Response {_ ∷ _} _ = Fin 1
   allPosCont .next {_ ∷ xs} _ zero = xs .force

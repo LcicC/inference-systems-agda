@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+-- This is part of Agda Inference Systems
+
+{-# OPTIONS --sized-types #-}
+
 open import Codata.Colist
 open import Codata.Thunk
 open import Size

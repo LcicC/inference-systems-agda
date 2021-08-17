@@ -2,7 +2,7 @@
 
 An Agda library for inference systems
 
-Main ideas of the library are described in in a paper presented at [ITP 2021](http://easyconferences.eu/itp2021/), available [here](https://drops.dagstuhl.de/opus/volltexte/2021/13908/). 
+Main ideas of the library are described in a paper presented at [ITP 2021](http://easyconferences.eu/itp2021/), available [here](https://drops.dagstuhl.de/opus/volltexte/2021/13908/). 
 
 ### How to use the library
 

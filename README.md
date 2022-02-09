@@ -1,8 +1,10 @@
 # Inference Systems in Agda 
 
-An Agda library for inference systems
+An Agda library for inference systems.
 
 Main ideas of the library are described in a paper presented at [ITP 2021](http://easyconferences.eu/itp2021/), available [here](https://drops.dagstuhl.de/opus/volltexte/2021/13908/). 
+
+Latest release has been tested with Agda 2.6.2.1 and stdlib 1.7.1
 
 ### How to use the library
 

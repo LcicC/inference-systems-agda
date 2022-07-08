@@ -2,11 +2,11 @@
 -- This is part of Agda Inference Systems 
 
 open import Agda.Builtin.Equality
+open import Data.Fin using (Fin)
 open import Data.Product
 open import Data.Sum
 open import Data.Vec using (Vec; fromList; length) 
   renaming (lookup to get)
-open import Data.Fin using (Fin)
 open import Level
 open import Relation.Unary using (_⊆_)
 

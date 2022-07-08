@@ -4,15 +4,15 @@
 {-# OPTIONS --sized-types --guardedness #-}
 
 open import Agda.Builtin.Equality
+open import Codata.Thunk
+open import Data.Container.Indexed
+open import Data.Empty
 open import Data.Product
 open import Data.Sum
-open import Data.Empty
 open import Data.Unit
 open import Level
-open import Size
-open import Codata.Thunk
 open import Relation.Unary using (_⊆_)
-open import Data.Container.Indexed
+open import Size
 
 module is-lib.InfSys.Container {𝓁}(U : Set 𝓁) where
 

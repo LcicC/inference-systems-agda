@@ -4,12 +4,12 @@
 {-# OPTIONS --sized-types --guardedness #-}
 
 open import Agda.Builtin.Equality
+open import Codata.Thunk
 open import Data.Product
 open import Data.Sum
-open import Codata.Thunk
-open import Size
 open import Level
 open import Relation.Unary using (_⊆_)
+open import Size
 
 module is-lib.InfSys.Equivalence {𝓁} where
 

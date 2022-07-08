@@ -4,12 +4,12 @@
 {-# OPTIONS --sized-types #-}
 
 open import Agda.Builtin.Equality
+open import Codata.Thunk
 open import Data.Product
 open import Data.Sum
-open import Size
-open import Codata.Thunk
 open import Level
 open import Relation.Unary using (_⊆_)
+open import Size
 
 module is-lib.InfSys.FlexSCoinduction {𝓁} where
   

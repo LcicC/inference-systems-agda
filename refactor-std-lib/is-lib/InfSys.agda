@@ -1,4 +1,6 @@
 ----------------------------------------------------------------
+-- The Agda standard library                                  --
+--                                                            --
 -- Library for (Generalized) Inference Systems                --
 -- paper    : "Flexible Coinduction in Agda" @ ITP 2021       --
 -- authors  : Luca Ciccone, Francesco Dagnino, Elena Zucca    --
@@ -6,7 +8,7 @@
 -- examples : https://github.com/LcicC/inference-systems-agda --
 ----------------------------------------------------------------    
 
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --guardedness --without-K --safe #-}
 
 -- Using Coinductive Records
 module is-lib.InfSys {𝓁} where

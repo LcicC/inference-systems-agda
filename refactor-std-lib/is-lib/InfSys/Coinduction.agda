@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- This is part of Agda Inference Systems 
 
-{-# OPTIONS --guardedness #-}
+{-# OPTIONS --guardedness --without-K --safe #-}
 
 open import Agda.Builtin.Equality
 open import Data.Product

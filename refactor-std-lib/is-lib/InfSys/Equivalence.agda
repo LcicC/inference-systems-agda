@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- This is part of Agda Inference Systems 
 
-{-# OPTIONS --sized-types --guardedness #-}
+{-# OPTIONS --sized-types --guardedness --without-K #-}
 
 open import Agda.Builtin.Equality
 open import Codata.Thunk

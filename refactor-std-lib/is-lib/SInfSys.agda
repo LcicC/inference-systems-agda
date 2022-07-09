@@ -1,12 +1,12 @@
-----------------------------------------------------------------
--- The Agda standard library                                  --
---                                                            --
--- Library for (Generalized) Inference Systems                --
--- paper    : "Flexible Coinduction in Agda" @ ITP 2021       --
--- authors  : Luca Ciccone, Francesco Dagnino, Elena Zucca    --
--- doi      : https://doi.org/10.4230/LIPIcs.ITP.2021.13      --
--- examples : https://github.com/LcicC/inference-systems-agda --
-----------------------------------------------------------------   
+------------------------------------------------------------------------
+-- The Agda standard library                                  
+--                                                            
+-- Library for (Generalized) Inference Systems                
+-- paper    : "Flexible Coinduction in Agda" @ ITP 2021       
+-- authors  : Luca Ciccone, Francesco Dagnino, Elena Zucca    
+-- doi      : https://doi.org/10.4230/LIPIcs.ITP.2021.13      
+-- examples : https://github.com/LcicC/inference-systems-agda 
+------------------------------------------------------------------------
 
 {-# OPTIONS --sized-types --without-K #-}
 

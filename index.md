@@ -1,39 +1,35 @@
 ## Inference Systems in Agda 
 
-An Agda library for inference systems.
+An Agda library for (Generalized) Inference Systems.
 
 Main ideas of the library are described in a paper presented at [ITP 2021](http://easyconferences.eu/itp2021/), available [here](https://drops.dagstuhl.de/opus/volltexte/2021/13908/). 
 
 Check release notes for the compatibility with latest Agda and stdlib versions.
 
-### Markdown
+### How to use the library
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+First, place is-lib inside your working directory.
 
-```markdown
-Syntax highlighted code block
+Import ```is-lib.InfSys``` to include inference systems, interpretations and proof principles
 
-# Header 1
-## Header 2
-### Header 3
+Import ```is-lib.SInfSys``` to include inference systems, interpretations and proof principles using sized types 
 
-- Bulleted
-- List
 
-1. Numbered
-2. List
+### Content 
+* Types for meta-rules and inference systems with composition operators (```is-lib/InfSys/Base.agda```) 
+* Inductive interpretation, induction principle and properties (```is-lib/InfSys/Induction```) 
+* Conductive interpretation, coinduction principle and properties (```is-lib/InfSys/Coinduction```) and variant with sized types (```is-lib/InfSys/SCoinduction```)
+* Flexible conductive interpretation, bounded coinduction principle and properties (```is-lib/InfSys/FlexCoinduction```) and variant with sized types (```is-lib/InfSys/FlexSCoinduction```)
+* Inference systems as Indexed (Endo)Containers and equivalence (```is-lib/InfSys/Container```)
+* Examples: 
+  * predicates on colists (```Examples/Colist```) 
+  * big-step semantics of call-by-value lambda-calculus with divergence (```Examples/Lambda```) 
 
-**Bold** and _Italic_ and `Code` text
+#### Related projects 
+* A formalization of properties of binary Session Types (including Fair Subtping) in Agda. 
+[code](https://github.com/boystrange/FairSubtypingAgda) [paper](https://drops.dagstuhl.de/opus/volltexte/2021/14194/) 
 
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/LcicC/inference-systems-agda/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+#### Authors 
+* Luca Ciccone (Università di Torino)
+* [Francesco Dagnino](https://fdgn.github.io/) (Università di Genova)
+* [Elena Zucca](https://person.dibris.unige.it/zucca-elena/) (Università di Genova)

@@ -23,11 +23,11 @@ Check release notes for the compatibility with latest Agda and stdlib versions.
   * predicates on colists (```Examples/Colist```) 
   * big-step semantics of call-by-value lambda-calculus with divergence (```Examples/Lambda```)
 * ```refactor-std-lib``` contains the library refactored to be used inside Agda standard library
-  * Howto: place the content inside ```Data```  
+  * **Howto**: place the content inside ```Data```
 
 ### Related projects 
 
-* A formalization of properties of binary Session Types (including Fair Subtping). 
+* A formalization of properties of binary Session Types (including Fair Subtyping). 
 [code](https://github.com/boystrange/FairSubtypingAgda) [paper](https://drops.dagstuhl.de/opus/volltexte/2021/14194/) 
 
 ### Authors 

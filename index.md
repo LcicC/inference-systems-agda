@@ -1,21 +1,18 @@
 ## Inference Systems in Agda 
 
 An Agda library for (Generalized) Inference Systems.
-
 Main ideas of the library are described in a paper presented at [ITP 2021](http://easyconferences.eu/itp2021/), available [here](https://drops.dagstuhl.de/opus/volltexte/2021/13908/). 
-
 Check release notes for the compatibility with latest Agda and stdlib versions.
 
 ### How to use the library
 
 First, place ```is-lib``` inside your working directory.
-
 Import ```is-lib.InfSys``` to include inference systems, interpretations and proof principles
-
 Import ```is-lib.SInfSys``` to include inference systems, interpretations and proof principles using sized types 
 
 
 ### Content 
+
 * Types for meta-rules and inference systems with composition operators (```is-lib/InfSys/Base.agda```) 
 * Inductive interpretation, induction principle and properties (```is-lib/InfSys/Induction```) 
 * Conductive interpretation, coinduction principle and properties (```is-lib/InfSys/Coinduction```) and variant with sized types (```is-lib/InfSys/SCoinduction```)
@@ -28,10 +25,12 @@ Import ```is-lib.SInfSys``` to include inference systems, interpretations and pr
   * Howto: place the content inside ```Data```  
 
 #### Related projects 
+
 * A formalization of properties of binary Session Types (including Fair Subtping). 
 [code](https://github.com/boystrange/FairSubtypingAgda) [paper](https://drops.dagstuhl.de/opus/volltexte/2021/14194/) 
 
 #### Authors 
+
 * Luca Ciccone (Università di Torino)
 * [Francesco Dagnino](https://fdgn.github.io/) (Università di Genova)
 * [Elena Zucca](https://person.dibris.unige.it/zucca-elena/) (Università di Genova)

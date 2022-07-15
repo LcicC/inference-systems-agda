@@ -1,8 +1,10 @@
-## Welcome to GitHub Pages
+## Inference Systems in Agda 
 
-You can use the [editor on GitHub](https://github.com/LcicC/inference-systems-agda/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+An Agda library for inference systems.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Main ideas of the library are described in a paper presented at [ITP 2021](http://easyconferences.eu/itp2021/), available [here](https://drops.dagstuhl.de/opus/volltexte/2021/13908/). 
+
+Check release notes for the compatibility with latest Agda and stdlib versions.
 
 ### Markdown
 

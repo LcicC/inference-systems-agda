@@ -6,9 +6,9 @@ Check release notes for the compatibility with latest Agda and stdlib versions.
 
 ### How to use the library
 
-First, place ```is-lib``` inside your working directory.
-Import ```is-lib.InfSys``` to include inference systems, interpretations and proof principles
-Import ```is-lib.SInfSys``` to include inference systems, interpretations and proof principles using sized types 
+1. Place ```is-lib``` inside your working directory.
+2a. Import ```is-lib.InfSys``` to include inference systems, interpretations and proof principles
+2b. Import ```is-lib.SInfSys``` to include inference systems, interpretations and proof principles using **sized types** (no --safe) 
 
 
 ### Content 

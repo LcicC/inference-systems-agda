@@ -25,12 +25,12 @@ Check release notes for the compatibility with latest Agda and stdlib versions.
 * ```refactor-std-lib``` contains the library refactored to be used inside Agda standard library
   * Howto: place the content inside ```Data```  
 
-#### Related projects 
+### Related projects 
 
 * A formalization of properties of binary Session Types (including Fair Subtping). 
 [code](https://github.com/boystrange/FairSubtypingAgda) [paper](https://drops.dagstuhl.de/opus/volltexte/2021/14194/) 
 
-#### Authors 
+### Authors 
 
 * Luca Ciccone (Università di Torino)
 * [Francesco Dagnino](https://fdgn.github.io/) (Università di Genova)

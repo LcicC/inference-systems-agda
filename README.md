@@ -27,7 +27,7 @@ Import ```is-lib.SInfSys``` to include inference systems, interpretations and pr
 * A formalization of Fair Subtping in Agda. [code](https://github.com/boystrange/FairSubtypingAgda) [paper](https://drops.dagstuhl.de/opus/volltexte/2021/14194/) 
 
 #### Authors 
-* Luca Ciccone (Università di Torno)
+* Luca Ciccone (Università di Torino)
 * [Francesco Dagnino](https://fdgn.github.io/) (Università di Genova)
 * [Elena Zucca](https://person.dibris.unige.it/zucca-elena/) (Università di Genova)
 

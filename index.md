@@ -8,7 +8,7 @@ Check release notes for the compatibility with latest Agda and stdlib versions.
 
 ### How to use the library
 
-First, place is-lib inside your working directory.
+First, place ```is-lib``` inside your working directory.
 
 Import ```is-lib.InfSys``` to include inference systems, interpretations and proof principles
 
@@ -23,10 +23,12 @@ Import ```is-lib.SInfSys``` to include inference systems, interpretations and pr
 * Inference systems as Indexed (Endo)Containers and equivalence (```is-lib/InfSys/Container```)
 * Examples: 
   * predicates on colists (```Examples/Colist```) 
-  * big-step semantics of call-by-value lambda-calculus with divergence (```Examples/Lambda```) 
+  * big-step semantics of call-by-value lambda-calculus with divergence (```Examples/Lambda```)
+* ```refactor-std-lib``` contains the library refactored to be used inside Agda standard library
+  * Howto: place the content inside ```Data```  
 
 #### Related projects 
-* A formalization of properties of binary Session Types (including Fair Subtping) in Agda. 
+* A formalization of properties of binary Session Types (including Fair Subtping). 
 [code](https://github.com/boystrange/FairSubtypingAgda) [paper](https://drops.dagstuhl.de/opus/volltexte/2021/14194/) 
 
 #### Authors 

@@ -30,7 +30,7 @@ Check release notes for the compatibility with latest Agda and stdlib versions.
 * A formalization of properties of binary Session Types (including Fair Subtyping). 
 [code](https://github.com/boystrange/FairSubtypingAgda) [paper](https://drops.dagstuhl.de/opus/volltexte/2021/14194/) 
 
-**Note**: we would be happy to add references to works using the library. Let us know and we will list them!
+**Note**: we would be happy to add references to the works using the library. Feel free to contact us or open an isse providing a valid URL/DOI.
 
 ### Authors 
 
